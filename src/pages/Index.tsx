@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -7,14 +7,45 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+
+interface ConversionEvent {
+  type: string;
+  timestamp: number;
+  details?: string;
+}
 
 export default function Index() {
   const { toast } = useToast();
   const [email, setEmail] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [conversions, setConversions] = useState<ConversionEvent[]>([]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('conversions');
+    if (saved) {
+      setConversions(JSON.parse(saved));
+    }
+  }, []);
+
+  const trackConversion = (type: string, details?: string) => {
+    const event: ConversionEvent = {
+      type,
+      timestamp: Date.now(),
+      details,
+    };
+    const updated = [...conversions, event];
+    setConversions(updated);
+    localStorage.setItem('conversions', JSON.stringify(updated));
+    console.log('Конверсия зафиксирована:', event);
+  };
 
   const handleCTAClick = (type: string) => {
+    trackConversion('CTA_CLICK', type);
     toast({
       title: `${type} форма`,
       description: 'Мы свяжемся с вами в ближайшее время!',
@@ -23,12 +54,45 @@ export default function Index() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    trackConversion('FORM_SUBMIT', 'Контактная форма');
     toast({
       title: 'Заявка отправлена!',
       description: 'Мы свяжемся с вами в течение 24 часов.',
     });
     setEmail('');
   };
+
+  const handleProductClick = (product: string, price: string) => {
+    trackConversion('PRODUCT_CLICK', `${product} - ${price}`);
+    toast({
+      title: 'Добавлено в корзину',
+      description: `${product} (${price})`,
+    });
+  };
+
+  const testimonials = [
+    {
+      name: 'Анна Петрова',
+      avatar: '👩',
+      role: 'Владелица квартиры',
+      text: 'Благодаря курсу сэкономила 250 тыс. рублей на ремонте трёхкомнатной квартиры! Все инструменты понятные и рабочие.',
+      savings: '250 000 ₽',
+    },
+    {
+      name: 'Дмитрий Соколов',
+      avatar: '👨',
+      role: 'Инвестор в недвижимость',
+      text: 'Использую шаблоны для всех своих объектов. График Ганта помог избежать срыва сроков на двух проектах одновременно.',
+      savings: '180 000 ₽',
+    },
+    {
+      name: 'Елена Краснова',
+      avatar: '👩‍💼',
+      role: 'Дизайнер интерьеров',
+      text: 'Консультация по бюджетированию изменила мой подход к работе с клиентами. Теперь проекты завершаются точно в срок.',
+      savings: '320 000 ₽',
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -45,9 +109,60 @@ export default function Index() {
             <a href="#about" className="text-sm font-medium hover:text-accent transition-colors">О нас</a>
             <a href="#contact" className="text-sm font-medium hover:text-accent transition-colors">Контакты</a>
           </nav>
-          <Button variant="outline" className="md:hidden">
-            <Icon name="Menu" size={20} />
-          </Button>
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="outline" className="md:hidden">
+                <Icon name="Menu" size={20} />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px]">
+              <SheetHeader>
+                <SheetTitle className="font-heading">Меню</SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-4 mt-8">
+                <a 
+                  href="#services" 
+                  className="flex items-center gap-3 text-lg font-medium hover:text-accent transition-colors p-3 hover:bg-secondary rounded-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Icon name="BookOpen" size={20} />
+                  Услуги
+                </a>
+                <a 
+                  href="#products" 
+                  className="flex items-center gap-3 text-lg font-medium hover:text-accent transition-colors p-3 hover:bg-secondary rounded-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Icon name="Package" size={20} />
+                  Продукты
+                </a>
+                <a 
+                  href="#subscription" 
+                  className="flex items-center gap-3 text-lg font-medium hover:text-accent transition-colors p-3 hover:bg-secondary rounded-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Icon name="Star" size={20} />
+                  Подписка
+                </a>
+                <a 
+                  href="#about" 
+                  className="flex items-center gap-3 text-lg font-medium hover:text-accent transition-colors p-3 hover:bg-secondary rounded-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Icon name="Info" size={20} />
+                  О нас
+                </a>
+                <a 
+                  href="#contact" 
+                  className="flex items-center gap-3 text-lg font-medium hover:text-accent transition-colors p-3 hover:bg-secondary rounded-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Icon name="Mail" size={20} />
+                  Контакты
+                </a>
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </header>
 
@@ -235,7 +350,10 @@ export default function Index() {
                   <div className="flex items-baseline gap-2 mb-4">
                     <span className="text-3xl font-bold text-accent">{product.price}</span>
                   </div>
-                  <Button className="w-full bg-accent hover:bg-accent/90">
+                  <Button 
+                    className="w-full bg-accent hover:bg-accent/90"
+                    onClick={() => handleProductClick(product.title, product.price)}
+                  >
                     <Icon name="ShoppingCart" size={16} className="mr-2" />
                     Купить
                   </Button>
@@ -301,6 +419,48 @@ export default function Index() {
               </CardContent>
             </Card>
           </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-background">
+        <div className="container">
+          <div className="text-center mb-12">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4">Отзывы клиентов</h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Реальные результаты людей, которые использовали наши инструменты
+            </p>
+          </div>
+
+          <Carousel className="max-w-5xl mx-auto">
+            <CarouselContent>
+              {testimonials.map((testimonial, idx) => (
+                <CarouselItem key={idx} className="md:basis-1/2 lg:basis-1/3">
+                  <Card className="h-full">
+                    <CardHeader>
+                      <div className="flex items-center gap-3 mb-3">
+                        <Avatar className="w-12 h-12">
+                          <AvatarFallback className="text-2xl bg-accent/10">{testimonial.avatar}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <CardTitle className="text-base font-heading">{testimonial.name}</CardTitle>
+                          <CardDescription className="text-xs">{testimonial.role}</CardDescription>
+                        </div>
+                      </div>
+                      <Badge className="w-fit bg-accent/10 text-accent border-accent">
+                        <Icon name="TrendingDown" size={14} className="mr-1" />
+                        Экономия: {testimonial.savings}
+                      </Badge>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{testimonial.text}</p>
+                    </CardContent>
+                  </Card>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex" />
+            <CarouselNext className="hidden md:flex" />
+          </Carousel>
         </div>
       </section>
 
