@@ -545,12 +545,14 @@ export default function Index() {
 
                 <div className="mt-8 pt-8 border-t space-y-4">
                   <div className="flex items-center gap-3">
-                    <Icon name="Mail" size={20} className="text-accent" />
-                    <span>info@remontbudget.ru</span>
+                    <Icon name="User" size={20} className="text-accent" />
+                    <span className="font-medium">Чернов Виталий Александрович</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Icon name="Phone" size={20} className="text-accent" />
-                    <span>+7 (999) 123-45-67</span>
+                    <a href="tel:+79294390444" className="hover:text-accent transition-colors">
+                      +7 (929) 439-04-44
+                    </a>
                   </div>
                 </div>
               </CardContent>
@@ -601,9 +603,21 @@ export default function Index() {
                 <Icon name="Home" size={24} />
                 <span className="font-heading text-lg font-bold">РемонтБюджет</span>
               </div>
-              <p className="text-sm opacity-80">
+              <p className="text-sm opacity-80 mb-4">
                 Эффективное планирование ремонта для каждого
               </p>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2 opacity-80">
+                  <Icon name="User" size={16} />
+                  <span>Чернов Виталий Александрович</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Icon name="Phone" size={16} />
+                  <a href="tel:+79294390444" className="hover:opacity-100 opacity-80 transition-opacity">
+                    +7 (929) 439-04-44
+                  </a>
+                </div>
+              </div>
             </div>
             <div>
               <h4 className="font-heading font-semibold mb-4">Услуги</h4>
