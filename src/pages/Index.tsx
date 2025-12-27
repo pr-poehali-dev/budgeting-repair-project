@@ -100,7 +100,7 @@ export default function Index() {
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <Icon name="Home" size={24} className="text-accent" />
-            <span className="font-heading text-xl font-bold">РемонтБюджет</span>
+            <span className="font-heading text-xl font-bold">Ремонт без переплат</span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
             <a href="#services" className="text-sm font-medium hover:text-accent transition-colors">Услуги</a>
@@ -601,7 +601,7 @@ export default function Index() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Icon name="Home" size={24} />
-                <span className="font-heading text-lg font-bold">РемонтБюджет</span>
+                <span className="font-heading text-lg font-bold">Ремонт без переплат</span>
               </div>
               <p className="text-sm opacity-80 mb-4">
                 Эффективное планирование ремонта для каждого
@@ -651,7 +651,7 @@ export default function Index() {
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-primary-foreground/10 text-center text-sm opacity-60">
-            © 2024 РемонтБюджет. Все права защищены.
+            © 2024 Ремонт без переплат: план и практика. Все права защищены.
           </div>
         </div>
       </footer>
